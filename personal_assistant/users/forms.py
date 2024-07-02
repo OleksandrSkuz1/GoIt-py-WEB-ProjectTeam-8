@@ -200,11 +200,20 @@ class ProfileForm(forms.ModelForm):
     Custom user profile form.
     - Handles the avatar upload for the user's profile.
     """
-    avatar = forms.ImageField(widget=forms.FileInput())
+    avatar = forms.ImageField(widget=forms.FileInput(), required=False)
 
     class Meta:
         model = Profile
         fields = ['avatar']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        avatar = cleaned_data.get("avatar")
+
+        if not avatar and not self.instance.pk:
+            self.add_error('avatar', "This field is required.")
+
+        return cleaned_data
 
 
 class CustomSetPasswordForm(SetPasswordForm):

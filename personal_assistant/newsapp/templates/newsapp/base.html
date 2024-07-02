@@ -25,6 +25,37 @@
             padding: 8px 12px;
             font-size: 20px;
         }
+        .header .left .buttons .dashboard-button{
+            background-color: #9b2226;
+            border: none
+        }
+        .header .left .buttons .dashboard-button:hover {
+            background-color: #6d2023;
+        }
+        .header .left .buttons .nav-button {
+            border: none;
+            padding: 8px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            border-radius: 4px;
+            margin: 4px 2px;
+            color: #fff;
+        }
+        .header .left .buttons .nav-button.primary {
+            background-color: #005f73;
+        }
+        .header .left .buttons .nav-button.primary:hover {
+            background-color: #013a46;
+        }
+        .header .left .buttons .nav-button.secondary  {
+            background-color: #0a9396;
+            border: none
+        }
+        .header .left .buttons .nav-button.secondary:hover {
+            background-color: #005f73;
+        }
         .header .right {
             display: flex;
             align-items: center;
@@ -57,13 +88,19 @@
             border-radius: 5px;
             text-decoration: none;
         }
+        .avatar {
+            margin-left: 16px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="left">
             <div class="buttons">
-                <a href="/home/" role="button" style="background-color: #9b2226; border: none">{% block dashboard_label %}Dashboard{% endblock %}</a>
+                <a href="/home/" role="button" class="dashboard-button">{% block dashboard_label %}Dashboard{% endblock %}</a>
                 {% block nav_left_buttons %}{% endblock %}
             </div>
         </div>

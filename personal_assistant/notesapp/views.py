@@ -19,6 +19,7 @@ def note_list(request):
     HttpResponse: Rendered template with notes, tags, search form, and tag filter.
     """
     language = get_language(request)
+    trans = translations.get(language, translations['en'])
     query = request.GET.get('q')
     tag_query = request.GET.get('tag')
     search_form = NoteSearchForm(request.GET, language=language)
@@ -56,6 +57,7 @@ def note_list(request):
         'search_form': search_form,
         "query": query,
         'selected_tag_name': selected_tag_name,
+        'translations': trans
     })
 
 
@@ -69,8 +71,10 @@ def note_details(request, id):
     Args:
     id (int): The ID of the note to display
     """
+    language = get_language(request)
+    trans = translations.get(language, translations['en'])
     note = get_object_or_404(Note, pk=id, user=request.user)
-    return render(request, 'notesapp/note_details.html', {"note": note})
+    return render(request, 'notesapp/note_details.html', {"note": note, 'translations': trans})
 
 
 @login_required
@@ -87,6 +91,7 @@ def tag_list(request):
     HttpResponse: Rendered template with tags and tag form.
     """
     language = get_language(request)
+    trans = translations.get(language, translations['en'])
     tags = Tag.objects.filter(user=request.user)
     tags = tags.order_by('id')
 
@@ -100,7 +105,7 @@ def tag_list(request):
     except EmptyPage:
         tags = paginator.page(paginator.num_pages)
 
-    return render(request, 'notesapp/tag_list.html', {'tags': tags, 'tag_form': TagForm(user=request.user, language=language)})
+    return render(request, 'notesapp/tag_list.html', {'tags': tags, 'translations': trans, 'tag_form': TagForm(user=request.user, language=language)})
 
 
 @login_required
@@ -184,6 +189,8 @@ def edit_note(request, id):
     Returns:
     HttpResponse: Redirects to the note list or re-renders the note form on validation failure.
     """
+    language = get_language(request)
+    trans = translations.get(language, translations['en'])
     note = get_object_or_404(Note, id=id)
     if request.method == "POST":
         form = NoteForm(request.POST, instance=note, user=request.user)
@@ -201,7 +208,7 @@ def edit_note(request, id):
             return redirect('notesapp:note_list')
     else:
         form = NoteForm(instance=note, user=request.user)
-    return render(request, 'notesapp/note_form.html', {'form': form})
+    return render(request, 'notesapp/note_form.html', {'form': form, 'translations': trans})
 
 
 @login_required

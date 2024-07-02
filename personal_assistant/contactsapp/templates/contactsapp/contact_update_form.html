@@ -1,8 +1,0 @@
-{% extends "contactsapp/base.html" %}
-
-{% block content %}
-<form method="POST">{% csrf_token %}
-    {{ form }}
-    <button type="submit" class="primary">Edit</button>
-</form>
-{% endblock content %}

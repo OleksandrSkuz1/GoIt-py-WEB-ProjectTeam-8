@@ -1,4 +1,6 @@
 {% extends "notesapp/base.html" %}
+{% load l10n %}
+{% load month_translation_notes %}
 
 {% block title %}{{ note.title }}{% endblock %}
 
@@ -11,27 +13,94 @@
     }
 </script>
 
+<style>
+    .title_bold {
+        font-size: 30px;
+        font-weight: bold;
+    }
+    .small {
+        font-size: 24px;
+    }
+    .button {
+        padding: 10px 20px;
+        color: #fff;
+        border: none;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+    .primary {
+        background-color: #ee9b00;
+    }
+    .primary:hover {
+        background-color: #cc7a00;
+    }
+    .delete {
+        background-color: #ae2012;
+    }
+    .delete:hover {
+        background-color: #8c1a0b;
+    }
+    .back-button {
+        width: 240px;
+        background-color: #005f73;
+        text-align: center;
+    }
+    .back-button:hover {
+        background-color: #004052;
+    }
+</style>
+
 <div class="content-container" style="display: flex; max-width: 1200px; margin: auto;">
     <main style="flex: 3; padding-right: 20px;">
-        <h2>{{ note.title }}</h2>
-        <p>{{ note.content }}</p>
-        <p><strong>{{ translations.tags }}:</strong> 
-            {% for tag in note.tags.all %}
-                <a href="{% url 'notesapp:note_list' %}?tag={{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
-            {% endfor %}
-        </p>
-        <p><strong>{{ translations.created_at }}:</strong> {{ note.created_at }}</p>
-        <p><strong>{{ translations.updated_at }}:</strong> {{ note.updated_at }}</p>
-        <a href="{% url 'notesapp:edit_note' note.id %}" role="button" style="background-color: #ee9b00; border: none;">{{ translations.edit_note }}</a>
-        <form action="{% url 'notesapp:delete_note' note.id %}" method="post" style="display:inline;">
-            {% csrf_token %}
-            <button type="button" style="background-color: #ae2012; border: none;" onclick="confirmDelete(this.form)">{{ translations.delete_note }}</button>
-        </form>
+        {% if note %}
+            <h1>{{ note.title }}</h1>
+            <ul>
+                <div>
+                    <li style="margin-bottom: 10px;">
+                        <span class="title_bold">{{ translations.content }}:</span>
+                        <span class="small">{{ note.content }}</span>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <span class="title_bold">{{ translations.tags }}:</span>
+                        <span class="small">
+                            {% for tag in note.tags.all %}
+                                <a href="{% url 'notesapp:note_list' %}?tag={{ tag.name }}" style="text-decoration: none; color: #0a9396;">
+                                    {{ tag.name }}
+                                </a>{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </span>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <span class="title_bold">{{ translations.created_at }}:</span>
+                        <span class="small">{{ note.created_at|date:"j F Y, H:i"|translate_month:months }}</span>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <span class="title_bold">{{ translations.updated_at }}:</span>
+                        <span class="small">{{ note.updated_at|date:"j F Y, H:i"|translate_month:months }}</span>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <a role="button" class="button primary" style="margin: 10px 0;" href="{% url 'notesapp:edit_note' note.id %}">{{ translations.edit_note }}</a>
+                        <form action="{% url 'notesapp:delete_note' note.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="button" class="button delete" onclick="confirmDelete(this.form)">{{ translations.delete_note }}</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </ul>
+        {% else %}
+            <h2>{{ translations.note_not_found }}</h2>
+        {% endif %}
     </main>
+
     <aside style="flex: 1; min-width: 200px; max-width: 300px;">
-        <ul style="margin-left: -30px;">
-            <li><a href="{% url 'notesapp:note_list' %}" role="button" class="contrast" style="width: 240px; background-color: #94d2bd; border: none;">{{ translations.back_to_notes }}</a></li>
-        </ul>
+        <div style="margin-bottom: 40px; margin-top: 40px;">
+            <a role="button" class="button back-button" href="{% url 'notesapp:note_list' %}">{{ translations.back_to_notes }}</a>
+        </div>
     </aside>
 </div>
-{% endblock %}
+{% endblock content %}

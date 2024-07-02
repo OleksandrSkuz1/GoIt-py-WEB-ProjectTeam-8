@@ -11,4 +11,20 @@ def get_language(request):
 
 def translations_context_processor(request):
     language = get_language(request)
-    return {'translations': translations.get(language, translations['en'])}
+    return {
+        'translations': translations.get(language, translations['en']),
+        'months': {
+            'January': translations[language]['January'],
+            'February': translations[language]['February'],
+            'March': translations[language]['March'],
+            'April': translations[language]['April'],
+            'May': translations[language]['May'],
+            'June': translations[language]['June'],
+            'July': translations[language]['July'],
+            'August': translations[language]['August'],
+            'September': translations[language]['September'],
+            'October': translations[language]['October'],
+            'November': translations[language]['November'],
+            'December': translations[language]['December'],
+        }
+    }

@@ -1,0 +1,202 @@
+{% extends "contactsapp/base.html" %}
+
+{% block title %}{{ text.title }}{% endblock %}
+
+{% block content %}
+<script>
+    function confirmDelete(form, contactName) {
+        if (confirm('{{ text.confirm_delete }} "' + contactName + '"?')) {
+            form.submit();
+        }
+    }
+
+    function resetFormAndRedirect() {
+        document.querySelector('form').reset();
+        window.location.href = '{% url "contactsapp:contact_list" %}';
+    }
+
+    function filterByGroup(groupName) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('group', groupName);
+        window.location.href = url.href;
+    }
+</script>
+
+<style>
+    .contact-button {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 2px;
+        text-decoration: none;
+        background-color: #0a9396;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 19px;
+        width: 140px;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .contact-button:hover {
+        background-color: #005f73;
+    }
+
+    .contact-button-edit {
+        background-color: #ee9b00;
+        margin-left: 10px;
+    }
+
+    .contact-button-edit:hover {
+        background-color: #b88100;
+    }
+
+    .contact-button-delete {
+        background-color: #ae2012;
+        margin-left: 10px;
+    }
+
+    .contact-button-delete:hover {
+        background-color: #7e1710;
+    }
+
+    .contact-button-add {
+        background-color: #005f73;
+        color: #fff;
+        padding: 10px;
+        display: inline-block;
+        text-align: center;
+        width: 240px;
+    }
+
+    .contact-button-add:hover {
+        background-color: #004050;
+    }
+
+    .contact-button-go-to-groups {
+        background-color: #ca6702;
+        color: #fff;
+        padding: 10px;
+        display: inline-block;
+        text-align: center;
+        width: 240px;
+    }
+
+    .contact-button-go-to-groups:hover {
+        background-color: #a05201;
+    }
+
+    .pagination a {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 2px;
+        text-decoration: none;
+        background-color: #0a9396;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 19px;
+        width: 140px;
+        text-align: center;
+    }
+
+    .pagination a:hover {
+        background-color: #005f73;
+    }
+</style>
+
+<div class="content-container" style="display: flex; max-width: 1200px; margin: auto;">
+    <main style="flex: 3; padding-right: 20px;">
+        <h2>{{ text.list }}</h2>
+        {% if query %}
+            <p>{{ translations.showing_search_results_for }}: <strong>{{ query }}</strong></p>
+        {% elif selected_group_name and selected_group_name != translations.all %}
+            <p>{{ translations.showing_contacts_for_group }}: <strong>{{ selected_group_name }}</strong></p>
+        {% endif %}
+        {% if contacts %}
+            <ul>
+                {% for contact in contacts %}
+                    <li style="margin-bottom: 10px;">
+                        <a href="{% url 'contactsapp:contact_details' contact.id %}" role="button" class="outline" style="width: 200px;">
+                            {{ contact.name }}
+                        </a>
+                        <a href="{% url 'contactsapp:update_contact' contact.id %}" class="contact-button contact-button-edit">{{ text.edit }}</a>
+                        <form action="{% url 'contactsapp:delete_contact' contact.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="button" class="contact-button contact-button-delete" onclick="confirmDelete(this.form, '{{ contact.name }}')">{{ text.delete }}</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            {% if query %}
+                <p>{{ translations.no_contacts_found_for }} "<strong>{{ query }}</strong>". {{ translations.create_new_contact_question }}
+                <a href="{% url 'contactsapp:add_contact' %}">{{ translations.create_new_contact }}</a>?</p>
+            {% elif selected_group_name and selected_group_name != translations.all %}
+                <p>{{ translations.no_contacts_for_group }} <strong>{{ selected_group_name }}</strong>. {{ translations.you_can }}
+                <a href="{% url 'contactsapp:add_contact' %}">{{ translations.add_new_contact }}</a>.</p>
+            {% else %}
+                <p>{{ translations.no_contacts_yet }} {{ translations.you_can }}
+                <a href="{% url 'contactsapp:add_contact' %}">{{ translations.add_new_contact }}</a>
+                {{ translations.to_start }}</p>
+            {% endif %}
+        {% endif %}
+
+        <footer style="text-align: center; margin-top: 20px;">
+            <div class="pagination">
+                {% if contacts.has_previous %}
+                    <a href="?page=1{% if query %}&query={{ query }}{% endif %}{% if selected_group_name %}&group={{ selected_group_name }}{% endif %}" role="button" class="contact-button">{{ translations.first }}</a>
+                    <a href="?page={{ contacts.previous_page_number }}{% if query %}&query={{ query }}{% endif %}{% if selected_group_name %}&group={{ selected_group_name }}{% endif %}" role="button" class="contact-button">{{ translations.previous }}</a>
+                {% endif %}
+                <span style="padding-left: 15px; padding-right: 15px">{{ translations.page }} {{ contacts.number }} {{ translations.of }} {{ contacts.paginator.num_pages }}</span>
+                {% if contacts.has_next %}
+                    <a href="?page={{ contacts.next_page_number }}{% if query %}&query={{ query }}{% endif %}{% if selected_group_name %}&group={{ selected_group_name }}{% endif %}" role="button" class="contact-button">{{ translations.next }}</a>
+                    <a href="?page={{ contacts.paginator.num_pages }}{% if query %}&query={{ query }}{% endif %}{% if selected_group_name %}&group={{ selected_group_name }}{% endif %}" role="button" class="contact-button">{{ translations.last }}</a>
+                {% endif %}
+            </div>
+        </footer>
+    </main>
+
+    <aside style="flex: 1; min-width: 200px; max-width: 300px;">
+        <div style="margin-bottom: 40px; margin-top: 40px;">
+            <a href="{% url 'contactsapp:add_contact' %}" class="contact-button contact-button-add">{{ translations.add_contact }}</a>
+        </div>
+        <form method="get" action="{% url 'contactsapp:contact_list' %}">
+            <h3>{{ text.search }}</h3>
+            {{ search_form.as_p }}
+            <div class="grid">
+                <button type="submit" class="contact-button">{{ text.search }}</button>
+                <button type="button" onclick="resetFormAndRedirect()" class="contact-button contact-button-delete">{{ text.reset }}</button>
+            </div>
+        </form>
+        <div style="margin-top: 40px;">
+            <h3>{{ text.groups }}</h3>
+            <a href="{% url 'contactsapp:group_list' %}" class="contact-button contact-button-go-to-groups">{{ translations.go_to_groups }}</a>
+        </div>
+        <div>
+            {% if groups %}
+            <ul>
+                <li style="margin-top: 20px;">
+                    <a href="{% url 'contactsapp:contact_list' %}" style="text-decoration: none; color: #0a9396;">{{ translations.all }}</a>
+                </li>
+                {% for group in groups %}
+                    <li>
+                        <a href="?group_id={{ group.id }}" style="text-decoration: none; color: #0a9396;">
+                            {% if group.name == 'Family' %}
+                                {{ translations.family_group }}
+                            {% elif group.name == 'Friends' %}
+                                {{ translations.friends_group }}
+                            {% elif group.name == 'Work' %}
+                                {{ translations.work_group }}
+                            {% else %}
+                                {{ group.name }}
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        </div>
+    </aside>
+</div>
+{% endblock content %}

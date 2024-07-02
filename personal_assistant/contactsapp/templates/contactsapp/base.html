@@ -2,16 +2,19 @@
 
 {% block dashboard_label %}{{ translations.dashboard }}{% endblock %}
 
+{% block nav_left_buttons %}
+<a href="{% url 'contactsapp:contact_list' %}" class="nav-button primary">{{ translations.my_contacts }}</a>
+<a href="{% url 'notesapp:note_list' %}" class="nav-button secondary">{{ translations.my_notes }}</a>
+{% endblock %}
+
 {% block nav_right_buttons %}
-    <a role="button" aria-current="page" href="{% url 'contactsapp:index' %}">{{ translations.latest_contacts }}</a>
-    <a role="button" aria-current="page" href="{% url 'contactsapp:groups' %}">{{ translations.groups }}</a>
-    {% if user.is_authenticated %}
-        <a role="button" aria-current="page" href="{% url 'contactsapp:contacts' %}">{{ translations.all_contacts }}</a>
-        <a role="button" class="contrast" aria-current="page" href="{% url 'users:profile' %}">{{ translations.profile }}</a>
-        <a role="button" class="secondary" aria-current="page" href="{% url 'users:logout' %}">{{ translations.logout }}</a>
-    {% else %}
-        <a role="button" aria-current="page" href="{% url 'users:login' %}">{{ translations.all_contacts }}</a>
-        <a role="button" aria-current="page" href="{% url 'users:signup' %}">{{ translations.create_account }}</a>
-        <a role="button" aria-current="page" href="{% url 'users:login' %}">{{ translations.login }}</a>
-    {% endif %}
+<img src="{{ user.profile.avatar.url }}" alt="Avatar" class="avatar">
+<div class="buttons">
+    <a href="{% url 'users:profile' %}" role="button" class="contrast">{{ translations.profile }}</a>
+    <a href="{% url 'users:logout' %}?lang={{ request.session.language }}" role="button" class="secondary">{{ translations.logout }}</a>
+</div>
 {% endblock nav_right_buttons %}
+
+{% block content %}
+
+{% endblock content %}

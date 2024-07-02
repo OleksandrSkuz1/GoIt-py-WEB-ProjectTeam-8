@@ -1,14 +1,8 @@
-{% extends "notesapp/base.html" %}
+{% extends "contactsapp/base.html" %}
 
-{% block title %}{% if form.instance.pk %}{{ translations.edit_note }}{% else %}{{ translations.add_note }}{% endif %}{% endblock %}
+{% block title %}{% if form.instance.pk %}{{ translations.update_group }}{% else %}{{ translations.create_group }}{% endif %}{% endblock %}
 
 {% block content %}
-<script>
-    function resetFormAndRedirect() {
-        document.querySelector('form').reset();
-        window.location.href = '{% url "notesapp:note_list" %}';
-    }
-</script>
 <style>
     .button {
         padding: 16px 20px;
@@ -52,19 +46,6 @@
         background-color: #004050;
     }
 
-    .button.tag-manager {
-        background-color: #CA6702;
-        color: #fff;
-        padding: 10px;
-        display: inline-block;
-        text-align: center;
-        width: 240px;
-    }
-
-    .button.tag-manager:hover {
-        background-color: #a35402;
-    }
-
     .content-container {
         display: flex;
         max-width: 1200px;
@@ -91,7 +72,7 @@
 
 <div class="content-container">
     <main>
-        <h1>{% if form.instance.pk %}{{ translations.edit_note }}{% else %}{{ translations.add_note }}{% endif %}</h1>
+        <h1>{% if form.instance.pk %}{{ translations.update_group }}{% else %}{{ translations.create_group }}{% endif %}</h1>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
@@ -103,17 +84,14 @@
                         {{ translations.create_button }}
                     {% endif %}
                 </button>
-                <a href="{% url 'notesapp:note_list' %}" class="button cancel">{{ translations.cancel_button }}</a>
+                <a href="{% url 'contactsapp:group_list' %}" class="button cancel">{{ translations.cancel_button }}</a>
             </div>
         </form>
     </main>
     <aside>
         <div style="margin-bottom: 40px; margin-top: 40px;">
-            <a href="{% url 'notesapp:note_list' %}" role="button" class="button contrast">{{ translations.back_to_list }}</a>
-        </div>
-        <div style="margin-bottom: 40px; margin-top: 40px;">
-            <a href="{% url 'notesapp:tag_list' %}" role="button" class="button tag-manager">{{ translations.tag_manager }}</a>
+            <a href="{% url 'contactsapp:group_list' %}" role="button" class="button contrast">{{ translations.back_to_list }}</a>
         </div>
     </aside>
 </div>
-{% endblock %}
+{% endblock content %}

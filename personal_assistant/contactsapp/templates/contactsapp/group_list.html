@@ -1,0 +1,131 @@
+{% extends "contactsapp/base.html" %}
+
+{% block title %}{{ text.title }}{% endblock %}
+
+{% block content %}
+<script>
+    function confirmDelete(form, groupName) {
+        if (confirm('{{ text.confirm_delete }} "' + groupName + '"?')) {
+            form.submit();
+        }
+    }
+</script>
+
+<style>
+    .content-container {
+        display: flex;
+        max-width: 1200px;
+        margin: auto;
+    }
+    main {
+        flex: 3;
+        padding-right: 20px;
+    }
+    aside {
+        flex: 1;
+        min-width: 200px;
+        max-width: 300px;
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+    li {
+        margin-bottom: 10px;
+    }
+    .button {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 2px;
+        text-decoration: none;
+        background-color: #0a9396;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 19px;
+        width: 140px;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+    .button:hover {
+        background-color: #005f73;
+    }
+    .button-edit {
+        background-color: #ee9b00;
+        margin-left: 10px;
+    }
+    .button-edit:hover {
+        background-color: #b88100;
+    }
+    .button-delete {
+        background-color: #ae2012;
+        margin-left: 10px;
+    }
+    .button-delete:hover {
+        background-color: #7e1710;
+    }
+    .button-back {
+        width: 240px;
+        background-color: #005f73;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        display: inline-block;
+    }
+    .button-back:hover {
+        background-color: #004050;
+    }
+    .button-add {
+        width: 240px;
+        background-color: #94D2BD;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        display: inline-block;
+    }
+    .button-add:hover {
+        background-color: #6db4a6;
+    }
+</style>
+
+<div class="content-container">
+    <main>
+        {% if groups %}
+            <h2>{{ text.list }}</h2>
+            <ul>
+                {% for group in groups %}
+                    <li>
+                        <a href="{% url 'contactsapp:contact_list' %}?group_id={{ group.id }}" role="button" class="outline" style="width: 200px;">
+                            {% if group.name == 'Family' %}
+                                {{ translations.family_group }}
+                            {% elif group.name == 'Friends' %}
+                                {{ translations.friends_group }}
+                            {% elif group.name == 'Work' %}
+                                {{ translations.work_group }}
+                            {% else %}
+                                {{ group.name }}
+                            {% endif %}
+                        </a>
+                        <a href="{% url 'contactsapp:update_group' group.id %}" role="button" class="button button-edit">{{ text.edit }}</a>
+                        <form action="{% url 'contactsapp:delete_group' group.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="button" class="button button-delete" onclick="confirmDelete(this.form, '{{ group.name }}')">{{ text.delete }}</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <h2>{{ text.list_empty }}</h2>
+        {% endif %}
+    </main>
+
+    <aside>
+        <div style="margin-bottom: 40px; margin-top: 40px;">
+            <a href="{% url 'contactsapp:contact_list' %}" role="button" class="button button-back">{{ translations.back_to_contacts }}</a>
+        </div>
+        <div style="margin-bottom: 40px; margin-top: 40px;">
+            <a role="button" class="button button-add" href="{% url 'contactsapp:add_group' %}">{{ text.add_group }}</a>
+        </div>
+    </aside>
+</div>
+{% endblock content %}

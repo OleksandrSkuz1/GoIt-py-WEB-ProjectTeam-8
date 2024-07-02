@@ -23,6 +23,71 @@
     }
 </script>
 
+<style>
+    .note-button {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 2px;
+        text-decoration: none;
+        background-color: #0a9396;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 19px;
+        width: 140px;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .note-button:hover {
+        background-color: #005f73;
+    }
+
+    .note-button-edit {
+        background-color: #ee9b00;
+        margin-left: 10px;
+    }
+
+    .note-button-edit:hover {
+        background-color: #b88100;
+    }
+
+    .note-button-delete {
+        background-color: #ae2012;
+        margin-left: 10px;
+    }
+
+    .note-button-delete:hover {
+        background-color: #7e1710;
+    }
+
+    .note-button-add {
+        background-color: #005f73;
+        color: #fff;
+        padding: 10px;
+        display: inline-block;
+        text-align: center;
+        width: 240px;
+    }
+
+    .note-button-add:hover {
+        background-color: #004050;
+    }
+
+    .note-button-tag-manager {
+        background-color: #ca6702;
+        color: #fff;
+        padding: 10px;
+        display: inline-block;
+        text-align: center;
+        width: 240px;
+    }
+
+    .note-button-tag-manager:hover {
+        background-color: #a05201;
+    }
+</style>
+
 <div class="content-container" style="display: flex; max-width: 1200px; margin: auto;">
     <main style="flex: 3; padding-right: 20px;">
         <h2>{{ translations.my_notes }}</h2>
@@ -37,10 +102,10 @@
             {% for note in notes %}
             <li>
                 <a href="{% url 'notesapp:note_details' note.id %}" role="button" class="outline" style="width: 200px;">{{ note.title }}</a>
-                <a href="{% url 'notesapp:edit_note' note.id %}" role="button" style="background-color: #ee9b00; border: none;">{{ translations.edit_note }}</a>
+                <a href="{% url 'notesapp:edit_note' note.id %}" class="note-button note-button-edit">{{ translations.edit_note }}</a>
                 <form action="{% url 'notesapp:delete_note' note.id %}" method="post" style="display:inline;">
                     {% csrf_token %}
-                    <button type="button" style="background-color: #ae2012; border: none;" onclick="confirmDelete(this.form)">{{ translations.delete_note }}</button>
+                    <button type="button" class="note-button note-button-delete" onclick="confirmDelete(this.form)">{{ translations.delete_note }}</button>
                 </form>
             </li>
             {% endfor %}
@@ -60,66 +125,48 @@
         {% endif %}
 
         <footer style="text-align: center; margin-top: 20px;">
-            <style>
-                .pagination a {
-                    display: inline-block;
-                    padding: 8px 12px;
-                    margin: 2px;
-                    text-decoration: none;
-                    background-color: #0a9396;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    font-size: 19px;
-                    width: 140px;
-                    text-align: center;
-                }
-                .pagination a:hover {
-                    background-color: #005f73;
-                }
-            </style>
-
             <div class="pagination">
                 {% if notes.has_previous %}
-                    <a href="?page=1{% if query %}&query={{ query }}{% endif %}{% if selected_tag_name %}&tag={{ selected_tag_name }}{% endif %}" role="button">{{ translations.first }}</a>
-                    <a href="?page={{ notes.previous_page_number }}{% if query %}&query={{ query }}{% endif %}{% if selected_tag_name %}&tag={{ selected_tag_name }}{% endif %}" role="button">{{ translations.previous }}</a>
+                    <a href="?page=1{% if query %}&query={{ query }}{% endif %}{% if selected_tag_name %}&tag={{ selected_tag_name }}{% endif %}" role="button" class="note-button">{{ translations.first }}</a>
+                    <a href="?page={{ notes.previous_page_number }}{% if query %}&query={{ query }}{% endif %}{% if selected_tag_name %}&tag={{ selected_tag_name }}{% endif %}" role="button" class="note-button">{{ translations.previous }}</a>
                 {% endif %}
                 <span style="padding-left: 15px; padding-right: 15px">{{ translations.page }} {{ notes.number }} {{ translations.of }} {{ notes.paginator.num_pages }}</span>
                 {% if notes.has_next %}
-                    <a href="?page={{ notes.next_page_number }}{% if query %}&query={{ query }}{% endif %}{% if selected_tag_name %}&tag={{ selected_tag_name }}{% endif %}" role="button">{{ translations.next }}</a>
-                    <a href="?page={{ notes.paginator.num_pages }}{% if query %}&query={{ query }}{% endif %}{% if selected_tag_name %}&tag={{ selected_tag_name }}{% endif %}" role="button">{{ translations.last }}</a>
+                    <a href="?page={{ notes.next_page_number }}{% if query %}&query={{ query }}{% endif %}{% if selected_tag_name %}&tag={{ selected_tag_name }}{% endif %}" role="button" class="note-button">{{ translations.next }}</a>
+                    <a href="?page={{ notes.paginator.num_pages }}{% if query %}&query={{ query }}{% endif %}{% if selected_tag_name %}&tag={{ selected_tag_name }}{% endif %}" role="button" class="note-button">{{ translations.last }}</a>
                 {% endif %}
             </div>
         </footer>
     </main>
     <aside style="flex: 1; min-width: 200px; max-width: 300px;">
-        <ul style="padding-left: 0; list-style-type: none;">
-            <li style="margin-bottom: 20px;">
-                <a href="{% url 'notesapp:add_note' %}" role="button" class="contrast" style="width: 240px; color: #fff; background-color: #94d2bd; border: none;">{{ translations.add_note }}</a>
-            </li>
-        </ul>
-        <h4>{{ translations.search }}</h4>
-        <form method="get" action="{% url 'notesapp:note_list' %}" style="margin-bottom: 20px;">
+        <div style="margin-bottom: 40px; margin-top: 40px;">
+            <a href="{% url 'notesapp:add_note' %}" class="note-button note-button-add">{{ translations.add_note }}</a>
+        </div>
+        <form method="get" action="{% url 'notesapp:note_list' %}">
+            <h3>{{ translations.search }}</h3>
             {{ search_form.as_p }}
-            <div style="display: flex; gap: 10px;">
-                <button type="submit" style="flex: 1; background-color: #0a9396; border: none;">{{ translations.search }}</button>
-                <button type="button" onclick="resetFormAndRedirect()" style="flex: 1; background-color: #ae2012; border: none;">{{ translations.reset }}</button>
+            <div class="grid">
+                <button type="submit" class="note-button">{{ translations.search }}</button>
+                <button type="button" onclick="resetFormAndRedirect()" class="note-button note-button-delete">{{ translations.reset }}</button>
             </div>
         </form>
-
-        <h4>{{ translations.tags }}</h4>
-        <ul style="padding-left: 0; list-style-type: none;">
-            <li style="margin-bottom: 10px;">
-                <a href="{% url 'notesapp:tag_list' %}" role="button" class="contrast" style="width: 240px; color: #fff; background-color: #005f73; border: none;">{{ translations.tag_manager }}</a>
-            </li>
-            <li>
-                <a href="#" onclick="filterByTag('All')">{{ translations.all }}</a>
-            </li>
-        </ul>
-        <div style="margin-left: 10px;">
-            {% for tag in tags %}
-            <a href="#" onclick="filterByTag('{{ tag.name }}')">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
-            {% endfor %}
+        <div style="margin-top: 40px;">
+            <h3>{{ translations.tags }}</h3>
+            <a href="{% url 'notesapp:tag_list' %}" class="note-button note-button-tag-manager">{{ translations.tag_manager }}</a>
+        </div>
+        <div>
+            {% if tags %}
+                <ul>
+                    <li style="margin-top: 20px;">
+                        <a href="#" onclick="filterByTag('All')" style="text-decoration: none; color: #0a9396;">{{ translations.all }}</a>
+                    </li>
+                    {% for tag in tags %}
+                        <li>
+                            <a href="#" onclick="filterByTag('{{ tag.name }}')" style="text-decoration: none; color: #0a9396;">{{ tag.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
         </div>
     </aside>
 </div>

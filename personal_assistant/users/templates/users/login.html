@@ -11,14 +11,77 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    .button {
+        padding: 16px 20px;
+        color: #fff;
+        border: none;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .button.primary {
+        background-color: #0a9396;
+    }
+
+    .button.primary:hover {
+        background-color: #086f6d;
+    }
+
+    .button.secondary {
+        background-color: #ae2012;
+    }
+
+    .button.secondary:hover {
+        background-color: #7e1710;
+    }
+
+    .button.third {
+        background-color: #ee9b00;
+    }
+
+    .button.third:hover {
+        background-color: #cc7a00;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+    }
+</style>
+
 <div class="container">
     <div>
         <h2>{{ translations.login }}</h2>
     </div>
 
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        <div class="alert-error">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <form action="{% url 'users:login' %}" method="post">
         {% csrf_token %}
-        <div>
+        <div class="form-group">
             <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
             {{ form.username }}
             {% if form.username.errors %}
@@ -29,7 +92,7 @@
             </ul>
             {% endif %}
         </div>
-        <div>
+        <div class="form-group">
             <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
             {{ form.password }}
             {% if form.password.errors %}
@@ -42,9 +105,9 @@
         </div>
 
         <div class="grid">
-            <button type="submit" style="background-color: #0a9396; border: none;">{{ translations.submit }}</button>
-            <button type="reset" style="background-color: #ae2012; border: none;">{{ translations.reset }}</button>
-            <button type="button" style="background-color: #ee9b00; border: none;" onclick="window.location.href='{% url 'users:password_reset' %}'">{{ translations.forgot_password }}</button>
+            <button type="submit" class="button primary">{{ translations.submit }}</button>
+            <button type="reset" class="button secondary">{{ translations.reset }}</button>
+            <button type="button" class="button third" onclick="window.location.href='{% url 'users:password_reset' %}'">{{ translations.forgot_password }}</button>
         </div>
     </form>
 </div>

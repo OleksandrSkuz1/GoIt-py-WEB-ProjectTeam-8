@@ -4,8 +4,8 @@
 
 {% block dashboard_label %}{{ translations.dashboard }}{% endblock %}
 {% block nav_left_buttons %}
-    <a href="{% url 'notesapp:note_list' %}" role="button" style="background-color: #94d2bd; border: none;">{{ translations.my_notes }}
-    <a href="{% url 'contactsapp:index' %}" role="button" style="background-color: #0a9396; border: none;">{{ translations.my_contacts }}</a>
+    <a href="{% url 'contactsapp:contact_list' %}" class="nav-button primary">{{ translations.my_contacts }}</a>
+    <a href="{% url 'notesapp:note_list' %}" class="nav-button secondary">{{ translations.my_notes }}</a>
 {% endblock %}
 
 {% block nav_right_buttons %}
@@ -16,12 +16,71 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    .button {
+        padding: 16px 20px;
+        color: #fff;
+        border: none;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .button.primary {
+        background-color: #0a9396;
+    }
+
+    .button.primary:hover {
+        background-color: #086f6d;
+    }
+
+    .button.cancel {
+        background-color: #ae2012;
+    }
+
+    .button.cancel:hover {
+        background-color: #7e1710;
+    }
+
+    .avatar-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .avatar {
+        width: 250px;
+        height: 250px;
+        overflow: hidden;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+</style>
 
 <div class="container">
     <h1>{{ translations.profile_title }} {{ user.username }}</h1>
-    <div style="text-align: center; margin-bottom: 20px;">
-        <div style="width: 250px; height: 250px; overflow: hidden; border-radius: 50%; display: inline-block;">
-            <img src="{{ user.profile.avatar.url }}" alt="Avatar of {{ user.username }}" style="width: 100%; height: 100%; object-fit: cover;"/>
+    <div class="avatar-container">
+        <div class="avatar">
+            <img src="{{ user.profile.avatar.url }}" alt="Avatar of {{ user.username }}"/>
         </div>
     </div>
 
@@ -53,8 +112,8 @@
             </div>
         </div>
         <div class="grid">
-            <button type="submit" style="background-color: #0a9396; border: none;">{{ translations.save_changes }}</button>
-            <button type="reset" style="background-color: #ae2012; border: none;">{{ translations.reset }}</button>
+            <button type="submit" class="button primary">{{ translations.save_changes }}</button>
+            <button type="reset" class="button cancel">{{ translations.reset }}</button>
         </div>
     </form>
 </div>

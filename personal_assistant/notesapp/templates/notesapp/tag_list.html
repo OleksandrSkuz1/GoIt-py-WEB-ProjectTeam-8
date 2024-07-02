@@ -11,6 +11,80 @@
     }
 </script>
 
+<style>
+    .tag-button {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 2px;
+        text-decoration: none;
+        background-color: #0a9396;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 19px;
+        width: 140px;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .tag-button:hover {
+        background-color: #005f73;
+    }
+
+    .tag-button-delete {
+        background-color: #ae2012;
+        margin-left: 10px;
+    }
+
+    .tag-button-delete:hover {
+        background-color: #7e1710;
+    }
+
+    .tag-button-add {
+        background-color: #005f73;
+        color: #fff;
+        padding: 10px;
+        display: inline-block;
+        text-align: center;
+        width: 240px;
+    }
+
+    .tag-button-add:hover {
+        background-color: #004050;
+    }
+
+    .tag-button-reset {
+        background-color: #ae2012;
+        color: white;
+        padding: 5px 10px;
+        margin-left: 10px;
+        border: none;
+    }
+
+    .tag-button-reset:hover {
+        background-color: #7e1710;
+    }
+
+    .pagination a {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 2px;
+        text-decoration: none;
+        background-color: #0a9396;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 19px;
+        width: 140px;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .pagination a:hover {
+        background-color: #005f73;
+    }
+</style>
+
 <div class="content-container" style="display: flex; max-width: 1200px; margin: auto;">
     <main style="flex: 3; padding-right: 20px;">
         <h2>{{ translations.tag_manager }}</h2>
@@ -21,31 +95,12 @@
                 <a href="{% url 'notesapp:note_list' %}?tag={{ tag.name }}" role="button" class="outline" style="width: 200px;">{{ tag.name }}</a>
                 <form action="{% url 'notesapp:delete_tag' tag.id %}" method="post" style="display:inline;">
                     {% csrf_token %}
-                    <button type="button" style="background-color: #ae2012; border: none;" onclick="confirmDelete(this.form)">{{ translations.delete_tag }}</button>
+                    <button type="button" class="tag-button tag-button-delete" onclick="confirmDelete(this.form)">{{ translations.delete_tag }}</button>
                 </form>
             </li>
             {% endfor %}
         </ul>
         <footer style="text-align: center; margin-top: 20px;">
-            <style>
-                .pagination a {
-                    display: inline-block;
-                    padding: 8px 12px;
-                    margin: 2px;
-                    text-decoration: none;
-                    background-color: #0a9396;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    font-size: 19px;
-                    width: 140px;
-                    text-align: center;
-                }
-                .pagination a:hover {
-                    background-color: #005f73;
-                }
-            </style>
-
             <div class="pagination">
                 {% if tags.has_previous %}
                     <a href="?page=1" role="button">{{ translations.first }}</a>
@@ -63,17 +118,19 @@
         {% endif %}
     </main>
     <aside style="flex: 1; min-width: 200px; max-width: 300px;">
-        <ul style="margin-left: -30px;">
-            <li><a href="{% url 'notesapp:note_list' %}" role="button" style="width: 240px; color: #fff; background-color: #94d2bd; border: none;">{{ translations.back_to_notes }}</a></li>
-        </ul>
-        <h4>{{ translations.add_new_tag }}</h4>
+        <div style="margin-bottom: 40px; margin-top: 40px;">
+            <a href="{% url 'notesapp:note_list' %}" class="tag-button tag-button-add">{{ translations.back_to_notes }}</a>
+        </div>
+        <h3>{{ translations.add_new_tag }}</h3>
         <form method="post" action="{% url 'notesapp:add_tag' %}" style="margin-bottom: 20px;">
             {% csrf_token %}
             {{ tag_form.as_p }}
             <input type="hidden" name="language" value="{{ request.session.language }}">
-            <button type="submit" style="color: #fff; background-color: #0a9396; border: none;">{{ translations.add_tag }}</button>
+            <div class="grid">
+                <button type="submit" class="tag-button">{{ translations.add_tag }}</button>
+                <button type="reset" class="tag-button tag-button-reset">{{ translations.reset }}</button>
+            </div>
         </form>
     </aside>
-
 </div>
 {% endblock %}

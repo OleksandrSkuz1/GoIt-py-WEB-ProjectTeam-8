@@ -97,6 +97,33 @@
             background-color: #ca6702; 
             border: none;
         }
+        .submit-button:hover {
+            background-color: #bb3e03; 
+        }
+        .nav-button {
+            border: none;
+            padding: 8px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            border-radius: 4px;
+            margin: 4px 2px;
+            color: #fff;
+        }
+        .nav-button.primary {
+            background-color: #005f73;
+        }
+        .nav-button.primary:hover {
+            background-color: #013a46;
+        }
+        .nav-button.secondary  {
+            background-color: #0a9396;
+            border: none
+        }
+        .nav-button.secondary:hover {
+            background-color: #005f73;
+        }
     </style>
 </head>
 <body>
@@ -104,8 +131,8 @@
         <div class="left">
             <div class="buttons">
                 {% if user.is_authenticated %}
-                <a href="{% url 'notesapp:note_list' %}" role="button" style="background-color: #005f73; border: none">{{ translations.my_notes }}</a>
-                <a href="{% url 'contactsapp:index' %}" role="button" style="background-color: #0a9396; border: none">{{ translations.my_contacts }}</a>
+                <a href="{% url 'contactsapp:contact_list' %}" role="button" class="nav-button primary">{{ translations.my_contacts }}</a>
+                <a href="{% url 'notesapp:note_list' %}" role="button" class="nav-button secondary">{{ translations.my_notes }}</a>
                 {% endif %}
             </div>
         </div>

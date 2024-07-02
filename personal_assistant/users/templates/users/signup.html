@@ -11,6 +11,53 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    .button {
+        padding: 16px 20px;
+        color: #fff;
+        border: none;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .button.primary {
+        background-color: #0a9396;
+    }
+
+    .button.primary:hover {
+        background-color: #086f6d;
+    }
+
+    .button.cancel {
+        background-color: #ae2012;
+    }
+
+    .button.cancel:hover {
+        background-color: #7e1710;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+</style>
+
 <div class="container">
     <div>
         <h2>{{ translations.sign_up }}</h2>
@@ -27,7 +74,7 @@
     <form method="post" action="{% url 'users:signup' %}">
         {% csrf_token %}
         
-        <div>
+        <div class="form-group">
             <label for="{{ form.username.id_for_label }}">{{ translations.username }}</label>
             {{ form.username }}
             {% if form.username.errors %}
@@ -39,7 +86,7 @@
             {% endif %}
         </div>
 
-        <div>
+        <div class="form-group">
             <label for="{{ form.email.id_for_label }}">{{ translations.email }}</label>
             {{ form.email }}
             {% if form.email.errors %}
@@ -51,7 +98,7 @@
             {% endif %}
         </div>
 
-        <div>
+        <div class="form-group">
             <label for="{{ form.password1.id_for_label }}">{{ translations.password }}</label>
             {{ form.password1 }}
             {% if form.password1.errors %}
@@ -63,7 +110,7 @@
             {% endif %}
         </div>
 
-        <div>
+        <div class="form-group">
             <label for="{{ form.password2.id_for_label }}">{{ translations.password_confirmation }}</label>
             {{ form.password2 }}
             {% if form.password2.errors %}
@@ -76,8 +123,8 @@
         </div>
 
         <div class="grid">
-            <button type="submit" style="background-color: #0a9396; border: none;">{{ translations.submit }}</button>
-            <button type="reset" style="background-color: #ae2012; border: none;">{{ translations.reset }}</button>
+            <button type="submit" class="button primary">{{ translations.submit }}</button>
+            <button type="reset" class="button cancel">{{ translations.reset }}</button>
         </div>
     </form>
 </div>

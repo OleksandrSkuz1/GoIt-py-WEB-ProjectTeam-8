@@ -1,11 +1,20 @@
 {% extends "newsapp/base.html" %}
 
 {% block dashboard_label %}{{ translations.dashboard }}{% endblock %}
-{% block nav_left_buttons %}<a href="{% url 'contactsapp:index' %}" role="button" style="background-color: #0a9396; border: none">{{ translations.my_contacts }}</a>{% endblock %}
+
+{% block nav_left_buttons %}
+<a href="{% url 'contactsapp:contact_list' %}" class="nav-button primary">{{ translations.my_contacts }}</a>
+<a href="{% url 'notesapp:note_list' %}" class="nav-button secondary">{{ translations.my_notes }}</a>
+{% endblock %}
+
 {% block nav_right_buttons %}
-<img src="{{ user.profile.avatar.url }}" alt="Avatar" style="margin-left: 16px;">
+<img src="{{ user.profile.avatar.url }}" alt="Avatar" class="avatar">
 <div class="buttons">
     <a href="{% url 'users:profile' %}" role="button" class="contrast">{{ translations.profile }}</a>
     <a href="{% url 'users:logout' %}?lang={{ request.session.language }}" role="button" class="secondary">{{ translations.logout }}</a>
 </div>
-{% endblock %}
+{% endblock nav_right_buttons %}
+
+{% block content %}
+
+{% endblock content %}

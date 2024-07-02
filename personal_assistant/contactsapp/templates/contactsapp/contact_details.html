@@ -1,0 +1,128 @@
+{% extends "contactsapp/base.html" %}
+{% load l10n %}
+{% load month_translation %}
+
+{% block title %}{{ contact.name }}{% endblock %}
+
+{% block content %}
+<script>
+    function confirmDelete(form, contactName) {
+        if (confirm('{{ text.confirm_delete }} "' + contactName + '"?')) {
+            form.submit();
+        }
+    }
+</script>
+
+<style>
+    .title_bold {
+        font-size: 30px;
+        font-weight: bold;
+    }
+    .small {
+        font-size: 24px;
+    }
+    .button {
+        padding: 10px 20px;
+        color: #fff;
+        border: none;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+    .primary {
+        background-color: #ee9b00;
+    }
+    .primary:hover {
+        background-color: #cc7a00;
+    }
+    .delete {
+        background-color: #ae2012;
+    }
+    .delete:hover {
+        background-color: #8c1a0b;
+    }
+    .back-button {
+        width: 240px;
+        background-color: #005f73;
+        text-align: center;
+    }
+    .back-button:hover {
+        background-color: #004052;
+    }
+</style>
+
+<div class="content-container" style="display: flex; max-width: 1200px; margin: auto;">
+    <main style="flex: 3; padding-right: 20px;">
+        {% if contact %}
+        <h1>{{ contact.name }}</h1>
+            <ul>
+                <div>
+                    <li style="margin-bottom: 10px;">
+                        <span class="title_bold">{{ text.phone }}:</span>
+                        <span class="small">{{ contact.phone }}</span>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <span class="title_bold">{{ text.email }}:</span>
+                        <span class="small">{{ contact.email }}</span>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <span class="title_bold">{{ text.address }}:</span>
+                        <span class="small">{{ contact.address }}</span>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <span class="title_bold">{{ text.birthday }}:</span>
+                        <span class="small">{{ contact.birthday|date:"j F Y"|default_if_none:''|translate_month:months }}</span>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <span class="title_bold">{{ text.created_at }}:</span>
+                        <span class="small">{{ contact.creation_time|date:"j F Y; H:i"|translate_month:months }}</span>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <span class="title_bold">{{ text.updated_at }}:</span>
+                        <span class="small">{{ contact.update_time|date:"j F Y; H:i"|translate_month:months }}</span>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <span class="title_bold">{{ text.group }}:</span>
+                        <span class="small">
+                            {% if contact.group %}
+                                <a href="{% url 'contactsapp:contact_list' %}?group_id={{ contact.group.id }}" style="text-decoration: none; color: #0a9396;">
+                                    {% if contact.group.name == 'Family' %}
+                                        {{ translations.family_group }}
+                                    {% elif contact.group.name == 'Friends' %}
+                                        {{ translations.friends_group }}
+                                    {% elif contact.group.name == 'Work' %}
+                                        {{ translations.work_group }}
+                                    {% else %}
+                                        {{ contact.group.name }}
+                                    {% endif %}
+                                </a>
+                            {% else %}
+                                ---
+                            {% endif %}
+                        </span>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <a role="button" class="button primary" style="margin: 10px 0;" href="{% url 'contactsapp:update_contact' contact.id %}">{{ text.edit }}</a>
+                        <form action="{% url 'contactsapp:delete_contact' contact.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="button" class="button delete" onclick="confirmDelete(this.form, '{{ contact.name }}')">{{ text.delete }}</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </ul>
+        {% else %}
+            <h2>{{ text.not_found }}</h2>
+        {% endif %}
+    </main>
+
+    <aside style="flex: 1; min-width: 200px; max-width: 300px;">
+        <div style="margin-bottom: 40px; margin-top: 40px;">
+            <a role="button" class="button back-button" href="{% url 'contactsapp:contact_list' %}">{{ translations.back_to_contacts }}</a>
+        </div>
+    </aside>
+</div>
+{% endblock content %}

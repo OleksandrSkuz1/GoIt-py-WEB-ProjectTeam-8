@@ -148,11 +148,18 @@ def profile(request):
             request.POST, request.FILES, instance=request.user.profile
         )
         if profile_form.is_valid():
-            profile_form.save()
-            messages.success(request, trans['profile_update_success'])
-            return redirect('users:profile')
+            if 'avatar' in request.FILES:
+                profile_form.save()
+                messages.success(request, trans['profile_update_success'])
+                return redirect('users:profile')
+            else:
+                messages.error(request, trans['no_avatar_selected'])
+        else:
+            messages.error(request, trans['form_invalid'])
 
-    profile_form = ProfileForm(instance=request.user.profile)
+    else:
+        profile_form = ProfileForm(instance=request.user.profile)
+
     return render(
         request, 'users/profile.html',
         context={'profile_form': profile_form, 'translations': trans}
