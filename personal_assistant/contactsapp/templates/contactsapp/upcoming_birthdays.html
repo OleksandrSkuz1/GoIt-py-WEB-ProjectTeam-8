@@ -1,0 +1,116 @@
+<!-- contactsapp/upcoming_birthdays.html -->
+{% extends "contactsapp/base.html" %}
+{% load l10n %}
+{% load month_translation %}
+
+{% block title %}{{ translations.upcoming_birthdays_title }}{% endblock %}
+
+{% block content %}
+<style>
+    .content-container {
+        display: flex;
+        max-width: 1200px;
+        margin: auto;
+    }
+    main {
+        flex: 3;
+        padding-right: 20px;
+    }
+    aside {
+        flex: 1;
+        min-width: 200px;
+        max-width: 300px;
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+    li {
+        margin-bottom: 10px;
+    }
+    .button {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 2px;
+        text-decoration: none;
+        background-color: #0a9396;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 19px;
+        width: 140px;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+    .button:hover {
+        background-color: #005f73;
+    }
+    .button-back {
+        width: 240px;
+        background-color: #005f73;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        display: inline-block;
+    }
+    .button-back:hover {
+        background-color: #004050;
+    }
+    .button-submit {
+        background-color: #0a9396;
+    }
+    .button-submit:hover {
+        background-color: #005f73;
+    }
+    .button-reset {
+        background-color: #ae2012;
+        margin-left: 10px;
+    }
+
+    .button-reset:hover {
+        background-color: #7e1710;
+    }
+</style>
+
+<script>
+    function resetFormAndRedirect() {
+        document.querySelector('form').reset();
+        window.location.href = '{% url "contactsapp:upcoming_birthdays" %}';
+    }
+</script>
+
+<div class="content-container">
+    <main>
+        <h2>{{ translations.upcoming_birthdays_for_next }} {{ days_declined }}</h2>
+        {% if contacts %}
+            <ul>
+                {% for contact in contacts %}
+                    <li>
+                        <a href="{% url 'contactsapp:contact_details' contact.id %}">{{ contact.name }}</a> - 
+                        {{ translations.birthday }}: {{ contact.birthday|date:"j F Y"|translate_month:months }} ({{ contact.age }})
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>{{ translations.no_upcoming_birthdays }}</p>
+        {% endif %}
+    </main>
+
+    <aside>
+        <div style="margin-bottom: 40px; margin-top: 40px;">
+            <a href="{% url 'contactsapp:contact_list' %}" role="button" class="button button-back">{{ translations.back_to_contact_list }}</a>
+        </div>
+        <div style="margin-bottom: 40px; margin-top: 40px;">
+            <h3>{{ translations.enter_days }}</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="grid">
+                    <button type="submit" class="button button-submit">{{ translations.submit }}</button>
+                    <button type="button" onclick="resetFormAndRedirect()" class="button button-reset">{{ translations.reset }}</button>
+                </div>
+            </form>
+        </div>
+    </aside>
+</div>
+{% endblock content %}

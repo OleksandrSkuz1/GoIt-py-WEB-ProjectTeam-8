@@ -73,6 +73,19 @@
         background-color: #004050;
     }
 
+    .contact-button-birthdays {
+        background-color: #50b392;
+        color: #fff;
+        padding: 10px;
+        display: inline-block;
+        text-align: center;
+        width: 240px;
+    }
+
+    .contact-button-birthdays:hover {
+        background-color: #0A9396;
+    }
+
     .contact-button-go-to-groups {
         background-color: #ca6702;
         color: #fff;
@@ -160,6 +173,9 @@
     <aside style="flex: 1; min-width: 200px; max-width: 300px;">
         <div style="margin-bottom: 40px; margin-top: 40px;">
             <a href="{% url 'contactsapp:add_contact' %}" class="contact-button contact-button-add">{{ translations.add_contact }}</a>
+        </div>
+        <div style="margin-bottom: 40px; margin-top: 40px;">
+            <a href="{% url 'contactsapp:upcoming_birthdays' %}" class="contact-button contact-button-birthdays">{{ translations.upcoming_birthdays_title }}</a>
         </div>
         <form method="get" action="{% url 'contactsapp:contact_list' %}">
             <h3>{{ text.search }}</h3>

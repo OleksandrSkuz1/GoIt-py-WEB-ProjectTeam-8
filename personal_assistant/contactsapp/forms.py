@@ -174,3 +174,19 @@ class ContactSearchForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.trans = translations.get(self.language, translations['en'])
         self.fields['query'].widget.attrs.update({'placeholder': self.trans['search_field']})
+
+
+class DaysForm(forms.Form):
+    days = forms.IntegerField(
+        min_value=1,
+        label='',
+        widget=forms.NumberInput(attrs={'autofocus': 'autofocus', 'required': True})
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.language = kwargs.pop('language', 'en')
+        self.trans = kwargs.pop('translations', translations.get(self.language, translations['en']))
+        super().__init__(*args, **kwargs)
+        self.fields['days'].widget.attrs.update({'placeholder': self.trans['days_placeholder']})
+        # Установка значення за замовчуванням
+        self.fields['days'].initial = kwargs.get('initial', {}).get('days', 7)

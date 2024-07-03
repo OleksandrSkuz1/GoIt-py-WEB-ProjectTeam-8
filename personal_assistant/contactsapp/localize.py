@@ -86,6 +86,15 @@ text_array = {
         'birthday_too_old': 'Birthday must be within the last 200 years.',
         'invalid_phone': 'Invalid phone number format.',
         'invalid_email': 'Invalid email address format.',
+        'upcoming_birthdays_title': 'Upcoming Birthdays',
+        'back_to_contact_list': 'Back to Contact List',
+        'enter_days': 'Number of Days',
+        'days_placeholder': 'Enter days',
+        'submit': 'Submit',
+        'upcoming_birthdays_for_next': 'Upcoming birthdays for the next',
+        'days': 'days',
+        'years_old': 'years old',
+        'no_upcoming_birthdays': 'No upcoming birthdays within the specified days.'
     },
     'uk': {
         'dashboard': 'Головна сторінка',
@@ -174,5 +183,14 @@ text_array = {
         'birthday_too_old': 'Дата народження повинна бути не раніше останніх 200 років.',
         'invalid_phone': 'Неправильний формат номера телефону.',
         'invalid_email': 'Неправильний формат електронної пошти.',
+        'upcoming_birthdays_title': 'Дні народження',
+        'back_to_contact_list': 'До списку контактів',
+        'enter_days': 'Кількість днів',
+        'days_placeholder': 'Введіть кількість днів',
+        'submit': 'Надіслати',
+        'upcoming_birthdays_for_next': 'Дні народження за наступні',
+        'days': 'днів',
+        'years_old': 'років',
+        'no_upcoming_birthdays': 'Немає днів народження у вказаний період.'
     }
 }

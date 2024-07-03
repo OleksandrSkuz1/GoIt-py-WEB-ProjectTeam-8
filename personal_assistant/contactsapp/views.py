@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView, UpdateView
@@ -8,10 +8,14 @@ from django.urls import reverse_lazy
 from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
+from datetime import date, timedelta
+from dateutil.relativedelta import relativedelta
+
 from .models import Contact, Group
-from .forms import ContactForm, GroupForm, ContactSearchForm
+from .forms import ContactForm, GroupForm, ContactSearchForm, DaysForm
 from .context_processors import get_language
 from .localize import text_array
+from .utils.utils import get_years_ukrainian, get_days_ukrainian
 
 
 @method_decorator(login_required, name='dispatch')
@@ -229,3 +233,54 @@ def delete_group(request, pk):
         group.delete()
         return redirect('contactsapp:group_list')
     return redirect('contactsapp:group_list')
+
+
+@login_required
+def upcoming_birthdays(request):
+    language = get_language(request)
+    trans = text_array.get(language, text_array['en'])
+    days = 7  # Default value
+
+    if request.method == 'POST':
+        form = DaysForm(request.POST, language=language, translations=trans)
+        if form.is_valid():
+            days = form.cleaned_data['days']
+    else:
+        form = DaysForm(initial={'days': days}, language=language, translations=trans)
+
+    today = date.today()
+    contacts = []
+
+    for single_date in (today + timedelta(n) for n in range(days + 1)):
+        current_year_contacts = Contact.objects.filter(
+            creator=request.user,
+            birthday__month=single_date.month,
+            birthday__day=single_date.day
+        )
+        for contact in current_year_contacts:
+            # Calculate age
+            next_birthday = date(
+                year=today.year,
+                month=contact.birthday.month,
+                day=contact.birthday.day
+            )
+            if next_birthday < today:
+                next_birthday = date(
+                    year=today.year + 1,
+                    month=contact.birthday.month,
+                    day=contact.birthday.day
+                )
+            age = relativedelta(next_birthday, contact.birthday).years
+            contact.age = get_years_ukrainian(age)  # Temporary attribute to store age with correct declension
+        contacts.extend(current_year_contacts)
+
+    if language == 'en':
+        days_declined = f"{days} days"
+    else:
+        days_declined = get_days_ukrainian(days)
+
+    return render(
+        request,
+        'contactsapp/upcoming_birthdays.html',
+        {'contacts': contacts, 'form': form, 'days': days, 'days_declined': days_declined, 'translations': trans}
+    )
